@@ -5,7 +5,6 @@ using static HarmonyLib.AccessTools;
 [assembly: MelonAuthorColor(255, 200, 200, 255)] // Color defined in other 1330 Studios mods
 [assembly: MelonColor(0xFF, 0xF8, 0xF8, 0xFF)] // Ghost White
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
-[assembly: MelonGame("Ninja Kiwi", "BloonsTD6-Epic")]
 [assembly: MelonInfo(typeof(BloonsSaveEnabler.BSE_Main), "Bloons Save Enabler", "1.0.1", "1330 Studios LLC")]
 
 namespace BloonsSaveEnabler;
@@ -23,10 +22,14 @@ public sealed class BSE_Main : MelonMod {
             var target = Method(targetMethodName);
 
             HarmonyInstance.Patch(original, new(target));
-        } catch (Exception e) {
-            LoggerInstance.BigError(e.Message);
-            LoggerInstance.WriteLine();
-            LoggerInstance.Error("BSE Patch failed, code update required");
+        } catch {
+            try {
+                Patch($"Il2Cpp{originalMethodName}", targetMethodName);
+            } catch (Exception e) {
+                LoggerInstance.BigError(e.Message);
+                LoggerInstance.WriteLine();
+                LoggerInstance.Error("BSE Patch failed, code update required");
+            }
         }
     }
 
